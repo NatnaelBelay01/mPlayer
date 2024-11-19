@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mplayer/core/theme/theme.dart';
-import 'package:mplayer/features/music_player/presentation/pages/now_playing_page.dart';
+import 'package:mplayer/features/music_player/presentation/pages/homepage.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(const MyApp());
 }
 
@@ -15,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: AppTheme.darkTheme,
-      home: const NowPlayingPage(),
+      home: const HomePage(),
     );
   }
 }

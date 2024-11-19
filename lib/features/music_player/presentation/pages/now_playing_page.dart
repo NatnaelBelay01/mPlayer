@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:mplayer/core/theme/color_pallet.dart';
 
 class NowPlayingPage extends StatelessWidget {
   const NowPlayingPage({super.key});
@@ -9,7 +10,12 @@ class NowPlayingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: const Icon(Icons.expand_more),
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: const Icon(Icons.expand_more),
+        ),
         title: const Row(
           children: [
             SizedBox(width: 60),
@@ -20,10 +26,10 @@ class NowPlayingPage extends StatelessWidget {
       body: Stack(
         children: [
           Align(
-            alignment: Alignment(0, -0.5),
+            alignment: const Alignment(0, -0.75),
             child: Container(
-              width: 270,
-              height: 270,
+              width: 360,
+              height: 360,
               decoration: const BoxDecoration(
                 image: DecorationImage(
                   image: AssetImage('images/a.jpg'),
@@ -36,7 +42,159 @@ class NowPlayingPage extends StatelessWidget {
               sigmaY: 20.0,
               sigmaX: 20.0,
             ),
-            child: Container(),
+            child: Padding(
+              padding: const EdgeInsets.only(left: 26, right: 25),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Container(
+                      width: 330,
+                      height: 330,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(25),
+                        image: const DecorationImage(
+                          image: AssetImage('images/a.jpg'),
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Remedy',
+                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 5),
+                  const Text(
+                    'Annie Schindel',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  Slider(
+                    onChanged: (value) {},
+                    min: 0,
+                    max: 2,
+                    value: 0.3,
+                    activeColor: Colors.blue,
+                    inactiveColor: Colors.grey,
+                  ),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [Text("1:46"), Text("3:40")],
+                  ),
+                  const SizedBox(height: 8),
+                  const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Icon(Icons.music_note),
+                      Icon(Icons.favorite_border),
+                    ],
+                  ),
+                  const SizedBox(height: 10),
+                  Container(
+                    width: 334,
+                    height: 100,
+                    decoration: BoxDecoration(
+                      color: ColorPallet.greyBackgroundColor,
+                      borderRadius: BorderRadius.circular(30),
+                    ),
+                    child: const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                "UP NEXT",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                ),
+                              ),
+                              Icon(Icons.dehaze),
+                            ],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "I'm Fine",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    width: 90,
+                                  ),
+                                  Text(
+                                    "Ashe",
+                                    style: TextStyle(
+                                      color: Colors.grey,
+                                      fontSize: 16,
+                                    ),
+                                  )
+                                ],
+                              ),
+                              Text(
+                                "2:16",
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 30),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: ColorPallet.greyBackgroundColor,
+                        child: const Icon(
+                          Icons.shuffle,
+                          color: Colors.white,
+                        ),
+                      ),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: ColorPallet.greyBackgroundColor,
+                        child: const Icon(Icons.skip_previous,
+                            color: Colors.white),
+                      ),
+                      const CircleAvatar(
+                        radius: 35,
+                        backgroundColor: Colors.white,
+                        child: Icon(Icons.pause, color: Colors.black),
+                      ),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: ColorPallet.greyBackgroundColor,
+                        child: const Icon(Icons.skip_next, color: Colors.white),
+                      ),
+                      CircleAvatar(
+                        radius: 25,
+                        backgroundColor: ColorPallet.greyBackgroundColor,
+                        child: const Icon(Icons.repeat, color: Colors.white),
+                      ),
+                    ],
+                  )
+                ],
+              ),
+            ),
           )
         ],
       ),
