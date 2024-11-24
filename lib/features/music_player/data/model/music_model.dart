@@ -7,7 +7,7 @@ class MusicModel extends MusicEntity {
     required super.path,
   });
 
-  Map<String, dynamic> toJson(MusicModel model) {
+  Map<String, dynamic> toJson() {
     return {
       "title": title,
       "path": path,

@@ -1,19 +1,28 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
+import 'package:hive/hive.dart';
 import 'package:mplayer/core/error/exception.dart';
 import 'package:mplayer/features/music_player/data/model/music_model.dart';
 
 abstract interface class LocalDataSource {
   Future<List<MusicModel>> fetchAll();
   List<MusicModel> fetchFromCache();
-  void cacheAll();
+  void cacheAll(List<MusicModel> musicList);
 }
 
 class LocalDataSourceImpl implements LocalDataSource {
+  final Box box;
+  const LocalDataSourceImpl({required this.box});
+
   @override
-  void cacheAll() {
-    // TODO: implement cacheAll
+  void cacheAll(List<MusicModel> musicList) {
+    box.write(() {
+      for (var i = 0; i < musicList.length; i++) {
+        box.put(i.toString(), musicList[i].toJson());
+      }
+    });
   }
 
   @override
@@ -21,12 +30,20 @@ class LocalDataSourceImpl implements LocalDataSource {
     List<FileSystemEntity> allFiles = [];
     Directory dir = Directory("/storage/emulated/0/");
     parseRecursively(dir, allFiles);
+    List<MusicModel> musicList =
+        await Future.wait(allFiles.map((file) => extractModel(file)).toList());
+    return musicList;
   }
 
   @override
   List<MusicModel> fetchFromCache() {
-    // TODO: implement fetchFromCache
-    throw UnimplementedError();
+    final List<MusicModel> allMusic = [];
+    box.read(() {
+      for (var i = 0; i < box.length; i++) {
+        allMusic.add(MusicModel.fromJson(box.get(i.toString())));
+      }
+    });
+    return allMusic;
   }
 
   Future<void> parseRecursively(
@@ -49,14 +66,15 @@ class LocalDataSourceImpl implements LocalDataSource {
     }
   }
 
-	Future<MusicModel> extractModel(File file) async {
-		final tagger = Audiotagger();
-		Tag? tag = await tagger.readTags(path: file.path);
+  Future<MusicModel> extractModel(FileSystemEntity file) async {
+    final tagger = Audiotagger();
+    Tag? tag = await tagger.readTags(path: file.path);
 
-		if(tag != null){
-			return MusicModel(path: file.path, artist: tag.artist ?? "", title: tag.title ?? "");
-		} else {
-			return MusicModel(path: file.path);
-		}
-	}
+    if (tag != null) {
+      return MusicModel(
+          path: file.path, artist: tag.artist ?? "", title: tag.title ?? "");
+    } else {
+      return MusicModel(path: file.path);
+    }
+  }
 }
