@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
@@ -18,6 +17,7 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   void cacheAll(List<MusicModel> musicList) {
+    box.clear();
     box.write(() {
       for (var i = 0; i < musicList.length; i++) {
         box.put(i.toString(), musicList[i].toJson());
@@ -29,7 +29,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   Future<List<MusicModel>> fetchAll() async {
     List<FileSystemEntity> allFiles = [];
     Directory dir = Directory("/storage/emulated/0/");
-    parseRecursively(dir, allFiles);
+    await parseRecursively(dir, allFiles);
     List<MusicModel> musicList =
         await Future.wait(allFiles.map((file) => extractModel(file)).toList());
     return musicList;
@@ -67,13 +67,17 @@ class LocalDataSourceImpl implements LocalDataSource {
   }
 
   Future<MusicModel> extractModel(FileSystemEntity file) async {
-    final tagger = Audiotagger();
-    Tag? tag = await tagger.readTags(path: file.path);
+    try {
+      final tagger = Audiotagger();
+      Tag? tag = await tagger.readTags(path: file.path);
 
-    if (tag != null) {
-      return MusicModel(
-          path: file.path, artist: tag.artist ?? "", title: tag.title ?? "");
-    } else {
+      if (tag != null) {
+        return MusicModel(
+            path: file.path, artist: tag.artist ?? "Unknown", title: tag.title ?? "UnKnown");
+      } else {
+        return MusicModel(path: file.path);
+      }
+    } catch (e) {
       return MusicModel(path: file.path);
     }
   }
