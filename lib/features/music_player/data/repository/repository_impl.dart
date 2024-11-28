@@ -32,4 +32,15 @@ class RepositoryImpl implements MusicRepository {
     // TODO: implement previousTrack
     throw UnimplementedError();
   }
+
+  @override
+  Future<Either<Failure, List<MusicEntity>>> fetchFromCache() async {
+		try{
+    	List<MusicModel> result = localDataSource.fetchFromCache();
+			return right(result);
+		} catch(e){
+			return left(Failure(message: "Error has occured during fetching from cache"));
+		}
+		
+  }
 }

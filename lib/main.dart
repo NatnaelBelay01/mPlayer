@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mplayer/core/theme/theme.dart';
 import 'package:mplayer/features/music_player/presentation/pages/homepage.dart';
+import 'package:mplayer/init_dependencies.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+	initDependecies();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(const MyApp());
 }
@@ -12,7 +14,6 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
