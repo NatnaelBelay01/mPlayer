@@ -23,7 +23,6 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-							print('pressed');
 							context.read<MusicBloc>().add(MusicFetchFromStorage());
 						},
             icon: const Icon(Icons.refresh_outlined),
@@ -46,7 +45,7 @@ class HomePage extends StatelessWidget {
               }
             }, builder: (context, state) {
               if (state is MusicLoadingState) {
-                return const CircularProgressIndicator();
+                return const Center(child: CircularProgressIndicator());
               } else if (state is LoadSuccess) {
                 return ListView.builder(
                   padding: const EdgeInsets.only(top: 10),

@@ -32,10 +32,14 @@ class LocalDataSourceImpl implements LocalDataSource {
     List<FileSystemEntity> allFiles = [];
     Directory dir = Directory("/storage/emulated/0/");
     await parseRecursively(dir, allFiles);
-    List<MusicModel> musicList =
-        await Future.wait(allFiles.map((file) => extractModel(file)).toList());
-    musicList.sort((a, b) => a.title.compareTo(b.title));
-    return musicList;
+    List<MusicModel> allMusics = [];
+    for (int i = 0; i < allFiles.length; i++) {
+      var temp = await extractModel(allFiles[i]);
+      if (temp != null) {
+        allMusics.add(temp);
+      }
+    }
+    return allMusics;
   }
 
   @override
@@ -46,21 +50,38 @@ class LocalDataSourceImpl implements LocalDataSource {
         allMusic.add(MusicModel.fromJson(box.get(i.toString())));
       }
     });
-    allMusic.sort((a, b) => a.title.compareTo(b.title));
+    allMusic
+        .sort((a, b) => a.title.compareTo(b.title));
     return allMusic;
   }
 
   Future<void> parseRecursively(
       Directory dir, List<FileSystemEntity> files) async {
+    final List excludedFolder = [
+      'Android',
+      'data',
+      'obb',
+      'system',
+      'root',
+      'proc',
+      'sys',
+      'dev',
+      'tmp',
+      '.thumbnails',
+      '.cache',
+      'backups',
+    ];
     try {
       await for (var entity in dir.list(recursive: false, followLinks: false)) {
         if (entity is Directory) {
-          if (entity.path.contains('/Android/')) continue;
+          final dirName = entity.path.split('/').last.toLowerCase();
+          if (excludedFolder.contains(dirName)) continue;
           await parseRecursively(entity, files); // Await recursive calls
         } else if (entity is File) {
-          if (entity.path.endsWith('m4a') ||
-              entity.path.endsWith('opus') ||
-              entity.path.endsWith('mp3')) {
+          if ((entity.path.endsWith('.m4a') ||
+                  entity.path.endsWith('.opus') ||
+                  entity.path.endsWith('.mp3')) &&
+              (await entity.length()) >= 1048576) {
             files.add(entity);
           }
         }
@@ -70,7 +91,7 @@ class LocalDataSourceImpl implements LocalDataSource {
     }
   }
 
-  Future<MusicModel> extractModel(FileSystemEntity file) async {
+  Future<MusicModel?> extractModel(FileSystemEntity file) async {
     try {
       final tagger = Audiotagger();
       Tag? tag = await tagger.readTags(path: file.path);
@@ -81,10 +102,10 @@ class LocalDataSourceImpl implements LocalDataSource {
             artist: tag.artist ?? "Unknown",
             title: tag.title ?? "UnKnown");
       } else {
-        return MusicModel(path: file.path);
+        return null;
       }
     } catch (e) {
-      return MusicModel(path: file.path);
+      return null;
     }
   }
 }
