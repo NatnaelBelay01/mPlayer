@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
 
 class MusicCard extends StatelessWidget {
-  const MusicCard({super.key});
+  final MusicEntity music;
+  const MusicCard({super.key, required this.music});
 
   @override
   Widget build(BuildContext context) {
@@ -28,25 +30,29 @@ class MusicCard extends StatelessWidget {
             const SizedBox(
               width: 10,
             ),
-            const Column(
-              children: [
-                Text(
-                  "Remedy",
-                  style: TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
+            Expanded(
+              child: Column(
+								crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    music.title.trim(),
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                      overflow: TextOverflow.ellipsis,
+                    ),
                   ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  "Annie Schindel",
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Colors.grey,
-                  ),
-                )
-              ],
+                  const SizedBox(height: 5),
+                  Text(
+                    music.artist.trim(),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.grey,
+                    ),
+                  )
+                ],
+              ),
             )
           ],
         ),

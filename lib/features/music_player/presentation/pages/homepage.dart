@@ -1,7 +1,12 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mplayer/core/theme/color_pallet.dart';
+import 'package:mplayer/core/utils/show_snack_bar.dart';
+import 'package:mplayer/features/music_player/presentation/bloc/music_bloc.dart';
+import 'package:mplayer/features/music_player/presentation/bloc/music_event.dart';
+import 'package:mplayer/features/music_player/presentation/bloc/music_state.dart';
 import 'package:mplayer/features/music_player/presentation/pages/music_card.dart';
 import 'package:mplayer/features/music_player/presentation/pages/now_playing_page.dart';
 
@@ -15,6 +20,15 @@ class HomePage extends StatelessWidget {
         title: const Center(
           child: Text('mPlayer'),
         ),
+        actions: [
+          IconButton(
+            onPressed: () {
+							print('pressed');
+							context.read<MusicBloc>().add(MusicFetchFromStorage());
+						},
+            icon: const Icon(Icons.refresh_outlined),
+          )
+        ],
       ),
       body: Stack(
         children: [
@@ -25,14 +39,26 @@ class HomePage extends StatelessWidget {
               color: ColorPallet.greyBackgroundColor,
               borderRadius: BorderRadius.circular(25),
             ),
-            child: ListView.builder(
-              padding: const EdgeInsets.only(top: 10),
-              itemCount: 20,
-              clipBehavior: Clip.antiAlias,
-              itemBuilder: (BuildContext context, int index) {
-                return const MusicCard();
-              },
-            ),
+            child:
+                BlocConsumer<MusicBloc, MusicState>(listener: (context, state) {
+              if (state is LoadingFailure) {
+                showSnackBar(context, state.message);
+              }
+            }, builder: (context, state) {
+              if (state is MusicLoadingState) {
+                return const CircularProgressIndicator();
+              } else if (state is LoadSuccess) {
+                return ListView.builder(
+                  padding: const EdgeInsets.only(top: 10),
+                  itemCount: state.result.length,
+                  clipBehavior: Clip.antiAlias,
+                  itemBuilder: (BuildContext context, int index) {
+                    return MusicCard(music: state.result[index]);
+                  },
+                );
+              }
+              return const SizedBox();
+            }),
           ),
           Positioned(
             bottom: 1,
@@ -50,7 +76,7 @@ class HomePage extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () {
                       showModalBottomSheet(
-													isScrollControlled: true,
+                          isScrollControlled: true,
                           context: context,
                           builder: (context) {
                             return const NowPlayingPage();

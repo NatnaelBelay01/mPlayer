@@ -3,6 +3,7 @@ import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:hive/hive.dart';
 import 'package:mplayer/core/error/exception.dart';
+import 'package:mplayer/core/utils/request_permission.dart';
 import 'package:mplayer/features/music_player/data/model/music_model.dart';
 
 abstract interface class LocalDataSource {
@@ -27,11 +28,13 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   Future<List<MusicModel>> fetchAll() async {
+    await requestPermissions();
     List<FileSystemEntity> allFiles = [];
     Directory dir = Directory("/storage/emulated/0/");
     await parseRecursively(dir, allFiles);
     List<MusicModel> musicList =
         await Future.wait(allFiles.map((file) => extractModel(file)).toList());
+    musicList.sort((a, b) => a.title.compareTo(b.title));
     return musicList;
   }
 
@@ -43,6 +46,7 @@ class LocalDataSourceImpl implements LocalDataSource {
         allMusic.add(MusicModel.fromJson(box.get(i.toString())));
       }
     });
+    allMusic.sort((a, b) => a.title.compareTo(b.title));
     return allMusic;
   }
 
@@ -73,7 +77,9 @@ class LocalDataSourceImpl implements LocalDataSource {
 
       if (tag != null) {
         return MusicModel(
-            path: file.path, artist: tag.artist ?? "Unknown", title: tag.title ?? "UnKnown");
+            path: file.path,
+            artist: tag.artist ?? "Unknown",
+            title: tag.title ?? "UnKnown");
       } else {
         return MusicModel(path: file.path);
       }

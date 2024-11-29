@@ -13,16 +13,17 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
     required this.fetchFromCache,
   }) : super(MusicInitialState()) {
     on<MusicFetchFromStorage>((event, emit) async {
+			emit(MusicLoadingState());
       final result = await fetchAll();
       result.fold(
-        (fail) => emit(LoadingFailure(message: fail.message)),
+        (fail) => emit(StorageLoadingFailure(message: fail.message)),
         (musicList) => emit(MusicLoadStorageSuccess(result: musicList)),
       );
     });
     on<MusicFetchFromCache>((event, emit) async {
       final result = await fetchFromCache();
       result.fold(
-        (fail) => emit(LoadingFailure(message: fail.message)),
+        (fail) => emit(CacheLoadingFailure(message: fail.message)),
         (musicList) => emit(MusicLoadCacheSuccess(result: musicList)),
       );
     });
