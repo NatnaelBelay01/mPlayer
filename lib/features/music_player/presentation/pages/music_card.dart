@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
+import 'package:mplayer/features/music_player/presentation/bloc/music_bloc.dart';
+import 'package:mplayer/features/music_player/presentation/bloc/music_event.dart';
 
 class MusicCard extends StatelessWidget {
   final MusicEntity music;
@@ -7,54 +10,57 @@ class MusicCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.transparent,
-      ),
-      height: 100,
-      child: Padding(
-        padding: const EdgeInsets.only(left: 5, top: 3),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Container(
-              width: 85,
-              height: 85,
-              decoration: BoxDecoration(
-                image: const DecorationImage(
-                  image: AssetImage('images/a.jpg'),
-                ),
-                borderRadius: BorderRadius.circular(25),
-              ),
-            ),
-            const SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              child: Column(
-								crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    music.title.trim(),
-                    style: const TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.white,
-                      overflow: TextOverflow.ellipsis,
-                    ),
+    return GestureDetector(
+			onTap: (){context.read<MusicBloc>().add(PlayThisEvent(musicEntity: music));},
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.transparent,
+        ),
+        height: 100,
+        child: Padding(
+          padding: const EdgeInsets.only(left: 5, top: 3),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Container(
+                width: 85,
+                height: 85,
+                decoration: BoxDecoration(
+                  image: const DecorationImage(
+                    image: AssetImage('images/a.jpg'),
                   ),
-                  const SizedBox(height: 5),
-                  Text(
-                    music.artist.trim(),
-                    style: const TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
-                  )
-                ],
+                  borderRadius: BorderRadius.circular(25),
+                ),
               ),
-            )
-          ],
+              const SizedBox(
+                width: 10,
+              ),
+              Expanded(
+                child: Column(
+      								crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      music.title.trim(),
+                      style: const TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    const SizedBox(height: 5),
+                    Text(
+                      music.artist.trim(),
+                      style: const TextStyle(
+                        fontSize: 16,
+                        color: Colors.grey,
+                      ),
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

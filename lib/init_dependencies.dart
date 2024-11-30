@@ -1,5 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive/hive.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:mplayer/features/music_player/data/datasources/local_data_source.dart';
 import 'package:mplayer/features/music_player/data/repository/repository_impl.dart';
 import 'package:mplayer/features/music_player/domain/repository/repository.dart';
@@ -32,8 +33,11 @@ Future<void> initDependecies() async {
     () => FetchFromCache(repository: serviceLocator()),
   );
 
+	serviceLocator.registerFactory(() => AudioPlayer());
+
   serviceLocator.registerLazySingleton(
     () => MusicBloc(
+			player: serviceLocator(),
       fetchAll: serviceLocator(),
       fetchFromCache: serviceLocator(),
     ),

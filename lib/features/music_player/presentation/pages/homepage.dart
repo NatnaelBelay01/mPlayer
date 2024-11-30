@@ -1,5 +1,4 @@
-import 'dart:ui';
-
+import 'package:mplayer/features/music_player/presentation/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mplayer/core/theme/color_pallet.dart';
@@ -8,7 +7,6 @@ import 'package:mplayer/features/music_player/presentation/bloc/music_bloc.dart'
 import 'package:mplayer/features/music_player/presentation/bloc/music_event.dart';
 import 'package:mplayer/features/music_player/presentation/bloc/music_state.dart';
 import 'package:mplayer/features/music_player/presentation/pages/music_card.dart';
-import 'package:mplayer/features/music_player/presentation/pages/now_playing_page.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
@@ -23,8 +21,8 @@ class HomePage extends StatelessWidget {
         actions: [
           IconButton(
             onPressed: () {
-							context.read<MusicBloc>().add(MusicFetchFromStorage());
-						},
+              context.read<MusicBloc>().add(MusicFetchFromStorage());
+            },
             icon: const Icon(Icons.refresh_outlined),
           )
         ],
@@ -59,88 +57,10 @@ class HomePage extends StatelessWidget {
               return const SizedBox();
             }),
           ),
-          Positioned(
+          const Positioned(
             bottom: 1,
             left: 1,
-            child: ClipRRect(
-              borderRadius: const BorderRadius.only(
-                topLeft: Radius.circular(30),
-                topRight: Radius.circular(30),
-              ),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: 100,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 10.0, sigmaY: 10.0),
-                  child: GestureDetector(
-                    onTap: () {
-                      showModalBottomSheet(
-                          isScrollControlled: true,
-                          context: context,
-                          builder: (context) {
-                            return const NowPlayingPage();
-                          });
-                    },
-                    child: Container(
-                      color: Colors.black.withOpacity(0.2),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 85,
-                                  height: 85,
-                                  decoration: BoxDecoration(
-                                    image: const DecorationImage(
-                                      image: AssetImage('images/a.jpg'),
-                                    ),
-                                    borderRadius: BorderRadius.circular(25),
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                const Column(
-                                  children: [
-                                    Text(
-                                      "Remedy",
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                    SizedBox(height: 5),
-                                    Text(
-                                      "Annie Schindel",
-                                      style: TextStyle(
-                                        fontSize: 16,
-                                        color: Colors.grey,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: const Icon(
-                                Icons.pause_circle,
-                                size: 45,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
+            child: BottomBar(),
           ),
         ],
       ),

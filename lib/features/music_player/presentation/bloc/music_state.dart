@@ -36,3 +36,18 @@ class LoadingFailure extends MusicState {
   LoadingFailure({this.message = "something went wrong"});
 }
 
+class PlayingState extends MusicState{
+	final MusicEntity nowPlaying;
+
+	PlayingState({required this.nowPlaying});
+}
+
+class PauseState extends MusicState{
+	final MusicEntity onPause;
+
+	PauseState({required this.onPause});
+}
+
+
+class NextState extends MusicState{}
+class PreviousState extends MusicState{}

@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:hive/hive.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:mplayer/core/error/exception.dart';
 import 'package:mplayer/core/utils/request_permission.dart';
 import 'package:mplayer/features/music_player/data/model/music_model.dart';
@@ -14,7 +16,7 @@ abstract interface class LocalDataSource {
 
 class LocalDataSourceImpl implements LocalDataSource {
   final Box box;
-  const LocalDataSourceImpl({required this.box});
+  LocalDataSourceImpl({required this.box});
 
   @override
   void cacheAll(List<MusicModel> musicList) {
@@ -47,11 +49,11 @@ class LocalDataSourceImpl implements LocalDataSource {
     final List<MusicModel> allMusic = [];
     box.read(() {
       for (var i = 0; i < box.length; i++) {
-        allMusic.add(MusicModel.fromJson(box.get(i.toString())));
+        var temp = MusicModel.fromJson(box.get(i.toString()));
+        allMusic.add(temp);
       }
     });
-    allMusic
-        .sort((a, b) => a.title.compareTo(b.title));
+    allMusic.sort((a, b) => a.title.compareTo(b.title));
     return allMusic;
   }
 
