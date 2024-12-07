@@ -13,7 +13,7 @@ final serviceLocator = GetIt.instance;
 Future<void> initDependecies() async {
  	await Hive.initFlutter(); 
 	final musicbox = await Hive.openBox('music');
-  serviceLocator.registerLazySingleton<Box>(() => musicbox);
+  serviceLocator.registerSingleton<Box>(musicbox);
   serviceLocator.registerLazySingleton<LocalDataSource>(
     () => LocalDataSourceImpl(
       box: serviceLocator(),

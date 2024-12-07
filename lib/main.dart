@@ -7,9 +7,9 @@ import 'package:mplayer/features/music_player/presentation/bloc/music_event.dart
 import 'package:mplayer/features/music_player/presentation/pages/homepage.dart';
 import 'package:mplayer/init_dependencies.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  initDependecies();
+  await initDependecies();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(
     BlocProvider(
