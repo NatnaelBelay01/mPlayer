@@ -1,5 +1,5 @@
 import 'package:get_it/get_it.dart';
-import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:mplayer/features/music_player/data/datasources/local_data_source.dart';
 import 'package:mplayer/features/music_player/data/repository/repository_impl.dart';
@@ -7,14 +7,13 @@ import 'package:mplayer/features/music_player/domain/repository/repository.dart'
 import 'package:mplayer/features/music_player/domain/usecase/fetch_all.dart';
 import 'package:mplayer/features/music_player/domain/usecase/fetch_from_cache.dart';
 import 'package:mplayer/features/music_player/presentation/bloc/music_bloc.dart';
-import 'package:path_provider/path_provider.dart';
 
 final serviceLocator = GetIt.instance;
 
 Future<void> initDependecies() async {
-  Hive.defaultDirectory = (await getApplicationDocumentsDirectory()).path;
+ 	await Hive.initFlutter(); 
 
-  serviceLocator.registerLazySingleton(() => Hive.box(name: 'music'));
+  serviceLocator.registerLazySingleton(() => Hive.box('music'));
   serviceLocator.registerLazySingleton<LocalDataSource>(
     () => LocalDataSourceImpl(
       box: serviceLocator(),

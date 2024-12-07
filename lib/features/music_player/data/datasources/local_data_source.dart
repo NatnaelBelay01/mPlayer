@@ -1,9 +1,7 @@
 import 'dart:io';
-import 'dart:math';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
-import 'package:hive/hive.dart';
-import 'package:just_audio/just_audio.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mplayer/core/error/exception.dart';
 import 'package:mplayer/core/utils/request_permission.dart';
 import 'package:mplayer/features/music_player/data/model/music_model.dart';
@@ -21,11 +19,9 @@ class LocalDataSourceImpl implements LocalDataSource {
   @override
   void cacheAll(List<MusicModel> musicList) {
     box.clear();
-    box.write(() {
-      for (var i = 0; i < musicList.length; i++) {
-        box.put(i.toString(), musicList[i].toJson());
-      }
-    });
+    for (var i = 0; i < musicList.length; i++) {
+      box.put(i.toString(), musicList[i].toJson());
+    }
   }
 
   @override
@@ -47,12 +43,10 @@ class LocalDataSourceImpl implements LocalDataSource {
   @override
   List<MusicModel> fetchFromCache() {
     final List<MusicModel> allMusic = [];
-    box.read(() {
-      for (var i = 0; i < box.length; i++) {
-        var temp = MusicModel.fromJson(box.get(i.toString()));
-        allMusic.add(temp);
-      }
-    });
+    for (var i = 0; i < box.length; i++) {
+      var temp = MusicModel.fromJson(box.get(i.toString()));
+      allMusic.add(temp);
+    }
     allMusic.sort((a, b) => a.title.compareTo(b.title));
     return allMusic;
   }
