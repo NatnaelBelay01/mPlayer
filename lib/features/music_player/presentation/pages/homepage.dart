@@ -1,5 +1,7 @@
 import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_event.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_state.dart';
+import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
 import 'package:mplayer/features/music_player/presentation/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -60,10 +62,18 @@ class HomePage extends StatelessWidget {
               return const SizedBox();
             }),
           ),
-          const Positioned(
-            bottom: 1,
-            left: 1,
-            child: BottomBar(),
+          BlocBuilder<MusicControlBloc, MusicControlState>(
+            builder: (context, state) {
+							MusicEntity? nowPlaying;
+							if(state is PlayingState){
+								nowPlaying = state.nowPlaying;
+							}
+              return Positioned(
+                bottom: 1,
+                left: 1,
+                child: BottomBar(musicEntity: nowPlaying,),
+              );
+            }
           ),
         ],
       ),

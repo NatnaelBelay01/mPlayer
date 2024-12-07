@@ -86,7 +86,7 @@ class BottomBar extends StatelessWidget {
                             ),
                             const SizedBox(height: 5),
                             SizedBox(
-															width: MediaQuery.of(context).size.width - 180,
+                              width: MediaQuery.of(context).size.width - 180,
                               child: Text(
                                 musicEntity != null
                                     ? musicEntity!.artist.trim()
@@ -95,24 +95,29 @@ class BottomBar extends StatelessWidget {
                                   fontSize: 16,
                                   color: Colors.grey,
                                 ),
-																overflow: TextOverflow.ellipsis,
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                           ],
                         ),
                       ],
                     ),
-                    BlocBuilder<MusicControlBloc, MusicControlState>(builder: (context, state) {
+                    BlocBuilder<MusicControlBloc, MusicControlState>(
+                        builder: (context, state) {
                       return IconButton(
                         onPressed: () {
-													if(state is PlayingState){
-														context.read<MusicControlBloc>().add(PauseEvent(onPause: state.nowPlaying));
-													} else if(state is PauseState){
-														context.read<MusicControlBloc>().add(PlayEvent(musicEntity: state.onPause));
-													} else{
-														context.read<MusicControlBloc>().add(PlayEvent());
-													}
-												},
+                          if (state is PlayingState) {
+                            context
+                                .read<MusicControlBloc>()
+                                .add(PauseEvent(onPause: state.nowPlaying));
+                          } else if (state is PauseState) {
+                            context
+                                .read<MusicControlBloc>()
+                                .add(PlayEvent(musicEntity: state.onPause));
+                          } else {
+                            context.read<MusicControlBloc>().add(PlayEvent());
+                          }
+                        },
                         icon: Icon(
                           state is PlayingState
                               ? Icons.pause_circle
