@@ -2,9 +2,12 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:mplayer/core/theme/color_pallet.dart';
+import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
 
 class NowPlayingPage extends StatelessWidget {
-  const NowPlayingPage({super.key});
+	final MusicEntity? musicEntity;
+
+  const NowPlayingPage({super.key, this.musicEntity});
 
   @override
   Widget build(BuildContext context) {

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_event.dart';
 import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
-import 'package:mplayer/features/music_player/presentation/bloc/music_bloc.dart';
-import 'package:mplayer/features/music_player/presentation/bloc/music_event.dart';
 
 class MusicCard extends StatelessWidget {
   final MusicEntity music;
@@ -11,7 +11,11 @@ class MusicCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-			onTap: (){context.read<MusicBloc>().add(PlayThisEvent(musicEntity: music));},
+      onTap: () {
+        context.read<MusicControlBloc>().add(
+              PlayThisEvent(musicEntity: music),
+            );
+      },
       child: Container(
         decoration: const BoxDecoration(
           color: Colors.transparent,
@@ -37,7 +41,7 @@ class MusicCard extends StatelessWidget {
               ),
               Expanded(
                 child: Column(
-      								crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
                       music.title.trim(),

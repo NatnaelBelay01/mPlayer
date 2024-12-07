@@ -1,6 +1,7 @@
 import 'package:get_it/get_it.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
 import 'package:mplayer/features/music_player/data/datasources/local_data_source.dart';
 import 'package:mplayer/features/music_player/data/repository/repository_impl.dart';
 import 'package:mplayer/features/music_player/domain/repository/repository.dart';
@@ -41,4 +42,5 @@ Future<void> initDependecies() async {
       fetchFromCache: serviceLocator(),
     ),
   );
+	serviceLocator.registerLazySingleton(() => MusicControlBloc(player: serviceLocator()));
 }

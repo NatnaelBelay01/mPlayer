@@ -1,3 +1,5 @@
+import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_event.dart';
 import 'package:mplayer/features/music_player/presentation/widgets/bottom_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,6 +47,7 @@ class HomePage extends StatelessWidget {
               if (state is MusicLoadingState) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is LoadSuccess) {
+								context.read<MusicControlBloc>().add(LoadPlaylistEvent(musicList: state.result));
                 return ListView.builder(
                   padding: const EdgeInsets.only(top: 10),
                   itemCount: state.result.length,

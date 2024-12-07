@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mplayer/core/theme/theme.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
 import 'package:mplayer/features/music_player/presentation/bloc/music_bloc.dart';
 import 'package:mplayer/features/music_player/presentation/bloc/music_event.dart';
 import 'package:mplayer/features/music_player/presentation/pages/homepage.dart';
@@ -12,9 +13,19 @@ void main() async {
   await initDependecies();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(
-    BlocProvider(
-        create: (_) => serviceLocator<MusicBloc>()..add(MusicFetchFromCache()),
-        child: const MyApp()),
+    MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) =>
+              serviceLocator<MusicBloc>()..add(MusicFetchFromCache()),
+        ),
+        BlocProvider(
+          create: (_) =>
+              serviceLocator<MusicControlBloc>(),
+        )
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
@@ -26,11 +37,10 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-			debugShowCheckedModeBanner: false,
+      debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
       theme: AppTheme.darkTheme,
       home: const HomePage(),

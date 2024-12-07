@@ -40,41 +40,6 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
         },
       );
     });
-    on<PlayingEvent>((event, emit) {
-      final nowPlayingTrack = event.nowPlaying;
-      emit(PlayingState(nowPlaying: nowPlayingTrack));
-    });
-
-		on<PlayEvent>((event, emit){
-			player.play();
-		});
-
-    on<NextEvent>((event, emit) {
-      player.seekToNext();
-      emit(NextState());
-    });
-
-    on<PreviousEvent>((event, emit) {
-      player.seekToPrevious();
-      emit(PreviousState());
-    });
-
-    on<PlayThisEvent>((event, emit) {
-      final index = _indexMap[event.musicEntity];
-      if (index != null) {
-        player.seek(Duration.zero, index: index);
-				player.play();
-        add(PlayingEvent(nowPlaying: event.musicEntity));
-      } else {
-        emit(LoadingFailure(message: "Music not found"));
-      }
-    });
-
-    player.currentIndexStream.listen((index) {
-      if (index != null && player.audioSource is ConcatenatingAudioSource) {
-        add(PlayingEvent(nowPlaying: _musicEntities[index]!));
-      }
-    });
   }
   void _initializePlaylist(List<MusicEntity> musicList) {
     ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
