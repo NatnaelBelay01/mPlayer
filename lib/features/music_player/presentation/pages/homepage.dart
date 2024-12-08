@@ -68,6 +68,9 @@ class HomePage extends StatelessWidget {
 							if(state is PlayingState){
 								nowPlaying = state.nowPlaying;
 							}
+							if(state is PauseState){
+								nowPlaying = state.onPause;
+							}
               return Positioned(
                 bottom: 1,
                 left: 1,

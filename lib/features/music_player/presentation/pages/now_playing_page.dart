@@ -63,14 +63,14 @@ class NowPlayingPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 5),
-                  const Text(
-                    'Remedy',
-                    style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                  Text(
+                   musicEntity != null ? musicEntity!.title : 'Remedy',
+                    style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
                   ),
                   const SizedBox(height: 5),
-                  const Text(
-                    'Annie Schindel',
-                    style: TextStyle(
+                  Text(
+                     musicEntity != null ? musicEntity!.artist : 'Annie Schindel',
+                    style: const TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
                     ),
