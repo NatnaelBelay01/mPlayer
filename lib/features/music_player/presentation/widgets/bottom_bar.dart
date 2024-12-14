@@ -38,6 +38,9 @@ class BottomBar extends StatelessWidget {
                       if (state is PlayingState) {
                         playing = state.nowPlaying;
                       }
+                      if (state is PauseState){
+                        playing = state.onPause;
+                      }
                       return NowPlayingPage(
                         musicEntity: playing,
                       );
