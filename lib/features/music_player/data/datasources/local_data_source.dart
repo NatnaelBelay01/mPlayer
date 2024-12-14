@@ -42,13 +42,15 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   List<MusicModel> fetchFromCache() {
-    final List<MusicModel> allMusic = [];
-    for (var i = 0; i < box.length; i++) {
-      var temp = MusicModel.fromJson(box.get(i.toString()));
-      allMusic.add(temp);
-    }
-    allMusic.sort((a, b) => a.title.compareTo(b.title));
+    try{
+    final List<MusicModel> allMusic = box.values
+        .map((json) => MusicModel.fromJson(json))
+        .toList()
+      ..sort((a, b) => a.title.compareTo(b.title));
     return allMusic;
+    } catch(e){
+      throw LoadingException(message: e.toString());
+    }
   }
 
   Future<void> parseRecursively(

@@ -1,11 +1,15 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:mplayer/core/theme/color_pallet.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_event.dart';
+import 'package:mplayer/features/music_control/bloc/music_control_state.dart';
 import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
 
 class NowPlayingPage extends StatelessWidget {
-	final MusicEntity? musicEntity;
+  final MusicEntity? musicEntity;
 
   const NowPlayingPage({super.key, this.musicEntity});
 
@@ -64,12 +68,16 @@ class NowPlayingPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 5),
                   Text(
-                   musicEntity != null ? musicEntity!.title : 'Remedy',
-                    style: const TextStyle(fontSize: 26, fontWeight: FontWeight.bold),
+                    musicEntity != null ? musicEntity!.title : 'Remedy',
+                    style: const TextStyle(
+                        fontSize: 26, fontWeight: FontWeight.bold),
+                    maxLines: 1,
                   ),
                   const SizedBox(height: 5),
                   Text(
-                     musicEntity != null ? musicEntity!.artist : 'Annie Schindel',
+                    musicEntity != null
+                        ? musicEntity!.artist
+                        : 'Annie Schindel',
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.grey,
@@ -164,34 +172,72 @@ class NowPlayingPage extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: ColorPallet.greyBackgroundColor,
-                        child: const Icon(
-                          Icons.shuffle,
-                          color: Colors.white,
+                      GestureDetector(
+                        onTap: () {},
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: ColorPallet.greyBackgroundColor,
+                          child: const Icon(
+                            Icons.shuffle,
+                            color: Colors.white,
+                          ),
                         ),
                       ),
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: ColorPallet.greyBackgroundColor,
-                        child: const Icon(Icons.skip_previous,
-                            color: Colors.white),
+                      GestureDetector(
+                        onTap: () {
+                          context.read<MusicControlBloc>().add(PreviousEvent());
+                        },
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: ColorPallet.greyBackgroundColor,
+                          child: const Icon(Icons.skip_previous,
+                              color: Colors.white),
+                        ),
                       ),
-                      const CircleAvatar(
-                        radius: 35,
-                        backgroundColor: Colors.white,
-                        child: Icon(Icons.pause, color: Colors.black),
+                      BlocBuilder<MusicControlBloc, MusicControlState>(
+                          builder: (context, state) {
+                        return GestureDetector(
+                          onTap: () {
+                            if (state is PlayingState) {
+                              context
+                                  .read<MusicControlBloc>()
+                                  .add(PauseEvent(onPause: state.nowPlaying));
+                            } else if (state is PauseState) {
+                              context
+                                  .read<MusicControlBloc>()
+                                  .add(PlayEvent(musicEntity: state.onPause));
+                            } else {
+                              context.read<MusicControlBloc>().add(PlayEvent());
+                            }
+                          },
+                          child: CircleAvatar(
+                            radius: 35,
+                            backgroundColor: Colors.white,
+                            child: Icon(
+                                state is PlayingState
+                                    ? Icons.pause
+                                    : Icons.play_arrow,
+                                color: Colors.black),
+                          ),
+                        );
+                      }),
+                      GestureDetector(
+                        onTap: () {
+                          context.read<MusicControlBloc>().add(PreviousEvent());
+                        },
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: ColorPallet.greyBackgroundColor,
+                          child:
+                              const Icon(Icons.skip_next, color: Colors.white),
+                        ),
                       ),
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: ColorPallet.greyBackgroundColor,
-                        child: const Icon(Icons.skip_next, color: Colors.white),
-                      ),
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: ColorPallet.greyBackgroundColor,
-                        child: const Icon(Icons.repeat, color: Colors.white),
+                      GestureDetector(
+                        child: CircleAvatar(
+                          radius: 25,
+                          backgroundColor: ColorPallet.greyBackgroundColor,
+                          child: const Icon(Icons.repeat, color: Colors.white),
+                        ),
                       ),
                     ],
                   )

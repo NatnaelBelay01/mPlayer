@@ -15,7 +15,7 @@ class MusicModel extends MusicEntity {
     };
   }
 
-  factory MusicModel.fromJson(Map<String, dynamic> json) {
+  factory MusicModel.fromJson(Map<dynamic, dynamic> json) {
     return MusicModel(
       title: json["title"],
       path: json["path"],
