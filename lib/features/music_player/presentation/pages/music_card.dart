@@ -30,8 +30,10 @@ class MusicCard extends StatelessWidget {
                 width: 85,
                 height: 85,
                 decoration: BoxDecoration(
-                  image: const DecorationImage(
-                    image: AssetImage('images/a.jpg'),
+                  image: DecorationImage(
+                    image: music.photoByte == null
+                        ? const AssetImage('images/a.jpg')
+                        : MemoryImage(music.photoByte!),
                   ),
                   borderRadius: BorderRadius.circular(25),
                 ),

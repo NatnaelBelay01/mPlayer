@@ -98,7 +98,6 @@ class LocalDataSourceImpl implements LocalDataSource {
 
       if (tag != null) {
         Uint8List? imageByte = await tagger.readArtwork(path: file.path);
-        if(imageByte == null){}
         return MusicModel(
             path: file.path,
             artist: tag.artist ?? "Unknown",
