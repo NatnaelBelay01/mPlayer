@@ -1,3 +1,4 @@
+import 'package:mplayer/features/music_player/data/model/music_model_adapter.dart';
 import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
 
 class MusicModel extends MusicEntity {
@@ -5,6 +6,7 @@ class MusicModel extends MusicEntity {
     super.title,
     super.artist,
     required super.path,
+    super.photoByte,
   });
 
   Map<String, dynamic> toJson() {
@@ -13,6 +15,11 @@ class MusicModel extends MusicEntity {
       "path": path,
       "artist": artist,
     };
+  }
+
+  MusicModelAdapter toAdapter() {
+    return MusicModelAdapter(
+        title: title, artist: artist, path: path, photoByte: photoByte);
   }
 
   factory MusicModel.fromJson(Map<dynamic, dynamic> json) {

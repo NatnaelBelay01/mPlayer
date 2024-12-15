@@ -1,10 +1,12 @@
 import 'dart:io';
+import 'dart:typed_data';
 import 'package:audiotagger/audiotagger.dart';
 import 'package:audiotagger/models/tag.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mplayer/core/error/exception.dart';
 import 'package:mplayer/core/utils/request_permission.dart';
 import 'package:mplayer/features/music_player/data/model/music_model.dart';
+import 'package:mplayer/features/music_player/data/model/music_model_adapter.dart';
 
 abstract interface class LocalDataSource {
   Future<List<MusicModel>> fetchAll();
@@ -20,7 +22,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   void cacheAll(List<MusicModel> musicList) {
     box.clear();
     for (var i = 0; i < musicList.length; i++) {
-      box.put(i.toString(), musicList[i].toJson());
+      box.put(i.toString(), musicList[i].toAdapter());
     }
   }
 
@@ -44,7 +46,7 @@ class LocalDataSourceImpl implements LocalDataSource {
   List<MusicModel> fetchFromCache() {
     try{
     final List<MusicModel> allMusic = box.values
-        .map((json) => MusicModel.fromJson(json))
+        .map((musicAdapt) => (musicAdapt as MusicModelAdapter).toMusicModel())
         .toList()
       ..sort((a, b) => a.title.compareTo(b.title));
     return allMusic;
@@ -95,10 +97,14 @@ class LocalDataSourceImpl implements LocalDataSource {
       Tag? tag = await tagger.readTags(path: file.path);
 
       if (tag != null) {
+        Uint8List? imageByte = await tagger.readArtwork(path: file.path);
+        if(imageByte == null){}
         return MusicModel(
             path: file.path,
             artist: tag.artist ?? "Unknown",
-            title: tag.title ?? "UnKnown");
+            title: tag.title ?? "UnKnown",
+            photoByte: imageByte,
+            );
       } else {
         return null;
       }

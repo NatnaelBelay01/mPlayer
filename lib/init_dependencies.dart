@@ -3,6 +3,7 @@ import 'package:hive_flutter/hive_flutter.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
 import 'package:mplayer/features/music_player/data/datasources/local_data_source.dart';
+import 'package:mplayer/features/music_player/data/model/music_model_adapter.dart';
 import 'package:mplayer/features/music_player/data/repository/repository_impl.dart';
 import 'package:mplayer/features/music_player/domain/repository/repository.dart';
 import 'package:mplayer/features/music_player/domain/usecase/fetch_all.dart';
@@ -13,6 +14,7 @@ final serviceLocator = GetIt.instance;
 
 Future<void> initDependecies() async {
  	await Hive.initFlutter(); 
+  Hive.registerAdapter(MusicModelAdapterAdapter());
 	final musicbox = await Hive.openBox('music');
   serviceLocator.registerSingleton<Box>(musicbox);
   serviceLocator.registerLazySingleton<LocalDataSource>(
