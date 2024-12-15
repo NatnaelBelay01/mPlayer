@@ -228,7 +228,7 @@ class NowPlayingPage extends StatelessWidget {
                       }),
                       GestureDetector(
                         onTap: () {
-                          context.read<MusicControlBloc>().add(PreviousEvent());
+                          context.read<MusicControlBloc>().add(NextEvent());
                         },
                         child: CircleAvatar(
                           radius: 25,
