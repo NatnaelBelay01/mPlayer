@@ -37,9 +37,11 @@ class NowPlayingPage extends StatelessWidget {
             child: Container(
               width: 360,
               height: 360,
-              decoration: const BoxDecoration(
+              decoration: BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('images/a.jpg'),
+                  image: (musicEntity == null || musicEntity?.photoByte == null)
+                      ? const AssetImage('images/a.jpg')
+                      : MemoryImage(musicEntity!.photoByte!),
                 ),
               ),
             ),
@@ -60,8 +62,11 @@ class NowPlayingPage extends StatelessWidget {
                       height: 330,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(25),
-                        image: const DecorationImage(
-                          image: AssetImage('images/a.jpg'),
+                        image: DecorationImage(
+                          image: (musicEntity == null ||
+                                  musicEntity!.photoByte == null)
+                              ? const AssetImage('images/a.jpg')
+                              : MemoryImage(musicEntity!.photoByte!),
                         ),
                       ),
                     ),

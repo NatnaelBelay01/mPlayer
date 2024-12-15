@@ -38,7 +38,7 @@ class BottomBar extends StatelessWidget {
                       if (state is PlayingState) {
                         playing = state.nowPlaying;
                       }
-                      if (state is PauseState){
+                      if (state is PauseState) {
                         playing = state.onPause;
                       }
                       return NowPlayingPage(
@@ -61,8 +61,11 @@ class BottomBar extends StatelessWidget {
                           width: 85,
                           height: 85,
                           decoration: BoxDecoration(
-                            image: const DecorationImage(
-                              image: AssetImage('images/a.jpg'),
+                            image: DecorationImage(
+                              image: (musicEntity == null ||
+                                      musicEntity!.photoByte == null)
+                                  ? const AssetImage('images/a.jpg')
+                                  : MemoryImage(musicEntity!.photoByte!),
                             ),
                             borderRadius: BorderRadius.circular(25),
                           ),
