@@ -1,7 +1,6 @@
 import 'dart:io';
 import 'dart:typed_data';
-import 'package:audiotagger/audiotagger.dart';
-import 'package:audiotagger/models/tag.dart';
+import 'package:audiotags/audiotags.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:mplayer/core/error/exception.dart';
 import 'package:mplayer/core/utils/request_permission.dart';
@@ -44,13 +43,13 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   @override
   List<MusicModel> fetchFromCache() {
-    try{
-    final List<MusicModel> allMusic = box.values
-        .map((musicAdapt) => (musicAdapt as MusicModelAdapter).toMusicModel())
-        .toList()
-      ..sort((a, b) => a.title.compareTo(b.title));
-    return allMusic;
-    } catch(e){
+    try {
+      final List<MusicModel> allMusic = box.values
+          .map((musicAdapt) => (musicAdapt as MusicModelAdapter).toMusicModel())
+          .toList()
+        ..sort((a, b) => a.title.compareTo(b.title));
+      return allMusic;
+    } catch (e) {
       throw LoadingException(message: e.toString());
     }
   }
@@ -93,20 +92,21 @@ class LocalDataSourceImpl implements LocalDataSource {
 
   Future<MusicModel?> extractModel(FileSystemEntity file) async {
     try {
-      final tagger = Audiotagger();
-      Tag? tag = await tagger.readTags(path: file.path);
-
-      if (tag != null) {
-        Uint8List? imageByte = await tagger.readArtwork(path: file.path);
+      final Tag? tags = await AudioTags.read(file.path);
+      if (tags != null) {
+        Picture? imageByte = tags.pictures.firstOrNull;
+        Uint8List? imagedata;
+        if (imageByte != null) {
+          imagedata = imageByte.bytes;
+        }
         return MusicModel(
-            path: file.path,
-            artist: tag.artist ?? "Unknown",
-            title: tag.title ?? "UnKnown",
-            photoByte: imageByte,
-            );
-      } else {
-        return null;
+          path: file.path,
+          artist: tags.trackArtist ?? "Unknown",
+          title: tags.title ?? "UnKnown",
+          photoByte: imagedata,
+        );
       }
+      return null;
     } catch (e) {
       return null;
     }

@@ -9,6 +9,9 @@ Future<bool> requestPermissions() async {
   if (await Permission.storage.request().isGranted) {
     return true;
   }
+  if (await Permission.audio.request().isGranted) {
+    return true;
+  }
 
   // For Android 11+ scoped storage
   if (await Permission.manageExternalStorage.isGranted) {

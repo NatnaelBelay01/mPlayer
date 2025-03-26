@@ -1,0 +1,2 @@
+/home/xrash/mPlayer/android/app/.cxx/Debug/6i4n6j20/x86_64/CMakeFiles/edit_cache.dir
+/home/xrash/mPlayer/android/app/.cxx/Debug/6i4n6j20/x86_64/CMakeFiles/rebuild_cache.dir
