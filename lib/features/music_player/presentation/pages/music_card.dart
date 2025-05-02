@@ -27,15 +27,15 @@ class MusicCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Container(
-                width: 85,
-                height: 85,
+                width: 65,
+                height: 65,
                 decoration: BoxDecoration(
                   image: DecorationImage(
                     image: music.photoByte == null
                         ? const AssetImage('images/a.jpg')
                         : MemoryImage(music.photoByte!),
                   ),
-                  borderRadius: BorderRadius.circular(25),
+                  borderRadius: BorderRadius.circular(15),
                 ),
               ),
               const SizedBox(
@@ -48,7 +48,7 @@ class MusicCard extends StatelessWidget {
                     Text(
                       music.title.trim(),
                       style: const TextStyle(
-                        fontSize: 20,
+                        fontSize: 15,
                         fontWeight: FontWeight.bold,
                         color: Colors.white,
                         overflow: TextOverflow.ellipsis,

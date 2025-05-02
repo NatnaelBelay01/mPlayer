@@ -11,7 +11,6 @@ import 'package:mplayer/init_dependencies.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initDependecies();
-  SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersive);
   runApp(
     MultiBlocProvider(
       providers: [
