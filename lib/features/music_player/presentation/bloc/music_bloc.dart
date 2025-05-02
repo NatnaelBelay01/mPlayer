@@ -9,15 +9,10 @@ import 'package:mplayer/features/music_player/presentation/bloc/music_state.dart
 class MusicBloc extends Bloc<MusicEvent, MusicState> {
   final FetchAll fetchAll;
   final FetchFromCache fetchFromCache;
-  final AudioPlayer player;
-
-  Map<int, MusicEntity> _musicEntities = {};
-  Map<MusicEntity, int> _indexMap = {};
 
   MusicBloc({
     required this.fetchAll,
     required this.fetchFromCache,
-    required this.player,
   }) : super(MusicInitialState()) {
     on<MusicFetchFromStorage>((event, emit) async {
       emit(MusicLoadingState());
@@ -26,7 +21,6 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
         (fail) => emit(StorageLoadingFailure(message: fail.message)),
         (musicList) {
           emit(MusicLoadStorageSuccess(result: musicList));
-          _initializePlaylist(musicList);
         },
       );
     });
@@ -36,33 +30,8 @@ class MusicBloc extends Bloc<MusicEvent, MusicState> {
         (fail) => emit(CacheLoadingFailure(message: fail.message)),
         (musicList) {
           emit(MusicLoadCacheSuccess(result: musicList));
-          _initializePlaylist(musicList);
         },
       );
     });
-  }
-  void _initializePlaylist(List<MusicEntity> musicList) {
-    ConcatenatingAudioSource playlist = ConcatenatingAudioSource(
-      useLazyPreparation: true,
-      shuffleOrder: DefaultShuffleOrder(),
-      children: musicList
-          .map(
-            (music) => AudioSource.file(
-              music.path,
-            ),
-          )
-          .toList(),
-    );
-    player.setAudioSource(
-      playlist,
-      initialIndex: 0,
-      initialPosition: Duration.zero,
-    );
-    _musicEntities = {};
-    _indexMap = {};
-    for (int i = 0; i < musicList.length; i++) {
-      _musicEntities[i] = musicList[i];
-      _indexMap[musicList[i]] = i;
-    }
   }
 }

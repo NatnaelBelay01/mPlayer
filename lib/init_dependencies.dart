@@ -39,7 +39,6 @@ Future<void> initDependecies() async {
 
   serviceLocator.registerLazySingleton(
     () => MusicBloc(
-			player: serviceLocator(),
       fetchAll: serviceLocator(),
       fetchFromCache: serviceLocator(),
     ),
