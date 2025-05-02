@@ -1,6 +1,4 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:just_audio/just_audio.dart';
-import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
 import 'package:mplayer/features/music_player/domain/usecase/fetch_all.dart';
 import 'package:mplayer/features/music_player/domain/usecase/fetch_from_cache.dart';
 import 'package:mplayer/features/music_player/presentation/bloc/music_event.dart';
