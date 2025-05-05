@@ -1,0 +1,2 @@
+/home/natnaelbelay/mPlayer/android/app/.cxx/Debug/732y3s5v/armeabi-v7a/CMakeFiles/edit_cache.dir
+/home/natnaelbelay/mPlayer/android/app/.cxx/Debug/732y3s5v/armeabi-v7a/CMakeFiles/rebuild_cache.dir
