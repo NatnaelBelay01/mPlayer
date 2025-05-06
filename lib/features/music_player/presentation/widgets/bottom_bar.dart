@@ -35,16 +35,17 @@ class BottomBar extends StatelessWidget {
                   builder: (context) {
                     return BlocBuilder<MusicControlBloc, MusicControlState>(
                         builder: (context, state) {
-                      MusicEntity? playing;
                       if (state is PlayingState) {
-                        playing = state.nowPlaying;
+                        final playing = state.nowPlaying;
+                        final player = state.player;
+
+                        return NowPlayingPage(
+                          musicEntity: playing,
+                          player: player,
+                        );
                       }
-                      if (state is PauseState) {
-                        playing = state.onPause;
-                      }
-                      return NowPlayingPage(
-                        musicEntity: playing,
-                      );
+                      final player = (state as PlaylistLoadSuccess).player;
+                      return NowPlayingPage(player: player,);
                     });
                   });
             },

@@ -24,19 +24,7 @@ class MusicControlBloc extends Bloc<MusicControlEvent, MusicControlState> {
       emit(PlayingState(nowPlaying: event.musicEntity, player: player));
     });
 
-    on<PauseEvent>((event, emit) async {
-      await player.pause();
-      emit(PlayingState(nowPlaying: event.onPause, player: player));
-    });
-    on<NextEvent>((event, emit) {
-      player.seekToNext();
-      emit(NextState());
-    });
 
-    on<PreviousEvent>((event, emit) {
-      player.seekToPrevious();
-      emit(PreviousState());
-    });
 
     on<PlayThisEvent>((event, emit) {
       final index = _indexMap[event.musicEntity];
@@ -50,11 +38,11 @@ class MusicControlBloc extends Bloc<MusicControlEvent, MusicControlState> {
       }
     });
 
-    // player.currentIndexStream.listen((index) {
-    //   if (index != null && player.audioSource is ConcatenatingAudioSource) {
-    //     add(PlayingEvent(nowPlaying: _musicEntities[index]!));
-    //   }
-    // });
+    player.currentIndexStream.listen((index) {
+      if (index != null && player.audioSource is ConcatenatingAudioSource) {
+        add(PlayingEvent(nowPlaying: _musicEntities[index]!));
+      }
+    });
     //
     // player.playerStateStream.listen((playerState) {
     //   if (playerState.playing) {

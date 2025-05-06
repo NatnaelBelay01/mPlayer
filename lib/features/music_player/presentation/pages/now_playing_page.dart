@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:mplayer/core/theme/color_pallet.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_event.dart';
@@ -10,8 +11,9 @@ import 'package:mplayer/features/music_player/domain/entities/music_entity.dart'
 
 class NowPlayingPage extends StatelessWidget {
   final MusicEntity? musicEntity;
+  final AudioPlayer player;
 
-  const NowPlayingPage({super.key, this.musicEntity});
+  const NowPlayingPage({super.key, this.musicEntity, required this.player});
 
   @override
   Widget build(BuildContext context) {
@@ -189,8 +191,8 @@ class NowPlayingPage extends StatelessWidget {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          context.read<MusicControlBloc>().add(PreviousEvent());
+                        onTap: () async {
+                          await player.seekToPrevious();
                         },
                         child: CircleAvatar(
                           radius: 25,
@@ -199,36 +201,34 @@ class NowPlayingPage extends StatelessWidget {
                               color: Colors.white),
                         ),
                       ),
-                      BlocBuilder<MusicControlBloc, MusicControlState>(
-                          builder: (context, state) {
-                        return GestureDetector(
-                          onTap: () {
-                            if (state is PlayingState) {
-                              context
-                                  .read<MusicControlBloc>()
-                                  .add(PauseEvent(onPause: state.nowPlaying));
-                            } else if (state is PauseState) {
-                              context
-                                  .read<MusicControlBloc>()
-                                  .add(PlayEvent(musicEntity: state.onPause));
-                            } else {
-                              context.read<MusicControlBloc>().add(PlayEvent());
-                            }
-                          },
-                          child: CircleAvatar(
-                            radius: 35,
-                            backgroundColor: Colors.white,
-                            child: Icon(
-                                state is PlayingState
-                                    ? Icons.pause
-                                    : Icons.play_arrow,
-                                color: Colors.black),
-                          ),
-                        );
-                      }),
+                      StreamBuilder<PlayerState>(
+                          stream: player.playerStateStream,
+                          builder: (context, snapshot) {
+                            final playingState = snapshot.data;
+                            final playing = playingState?.playing;
+                            return GestureDetector(
+                              onTap: () async {
+                                if (playing == true) {
+                                  await player.pause();
+                                } else {
+                                  await player.play();
+                                }
+                              },
+                              child: CircleAvatar(
+                                radius: 35,
+                                backgroundColor: Colors.white,
+                                child: Icon(
+                                  playing == true
+                                      ? Icons.pause
+                                      : Icons.play_arrow,
+                                  size: 45,
+                                ),
+                              ),
+                            );
+                          }),
                       GestureDetector(
-                        onTap: () {
-                          context.read<MusicControlBloc>().add(NextEvent());
+                        onTap: () async {
+                          await player.seekToNext();
                         },
                         child: CircleAvatar(
                           radius: 25,
