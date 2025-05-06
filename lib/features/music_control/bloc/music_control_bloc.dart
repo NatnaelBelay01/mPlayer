@@ -12,20 +12,21 @@ class MusicControlBloc extends Bloc<MusicControlEvent, MusicControlState> {
   MusicControlBloc({required this.player}) : super(MusicControlIntialState()) {
     on<LoadPlaylistEvent>((event, emit) {
       _initializePlaylist(event.musicList);
+      emit(PlaylistLoadSuccess(player: player));
     });
     on<PlayingEvent>((event, emit) {
       final nowPlayingTrack = event.nowPlaying;
-      emit(PlayingState(nowPlaying: nowPlayingTrack));
+      emit(PlayingState(nowPlaying: nowPlayingTrack, player: player));
     });
 
     on<PlayEvent>((event, emit) async {
       await player.play();
-      emit(PlayingState(nowPlaying: event.musicEntity));
+      emit(PlayingState(nowPlaying: event.musicEntity, player: player));
     });
 
     on<PauseEvent>((event, emit) async {
       await player.pause();
-      emit(PauseState(onPause: event.onPause));
+      emit(PlayingState(nowPlaying: event.onPause, player: player));
     });
     on<NextEvent>((event, emit) {
       player.seekToNext();
@@ -42,31 +43,32 @@ class MusicControlBloc extends Bloc<MusicControlEvent, MusicControlState> {
       if (index != null) {
         player.seek(Duration.zero, index: index);
         player.play();
-        add(PlayingEvent(nowPlaying: event.musicEntity));
+        // add(PlayingEvent(nowPlaying: event.musicEntity));
+        emit(PlayingState(nowPlaying: event.musicEntity, player: player));
       } else {
         emit(PlayingFailure(message: "Music not found"));
       }
     });
 
-    player.currentIndexStream.listen((index) {
-      if (index != null && player.audioSource is ConcatenatingAudioSource) {
-        add(PlayingEvent(nowPlaying: _musicEntities[index]!));
-      }
-    });
-
-    player.playerStateStream.listen((playerState) {
-      if (playerState.playing) {
-        if (state is PauseState) {
-          final pausedTrack = (state as PauseState).onPause;
-          add(PlayEvent(musicEntity: pausedTrack));
-        }
-      } else {
-        if (state is PlayingState) {
-          final currentTrack = (state as PlayingState).nowPlaying;
-          add(PauseEvent(onPause: currentTrack));
-        }
-      }
-    });
+    // player.currentIndexStream.listen((index) {
+    //   if (index != null && player.audioSource is ConcatenatingAudioSource) {
+    //     add(PlayingEvent(nowPlaying: _musicEntities[index]!));
+    //   }
+    // });
+    //
+    // player.playerStateStream.listen((playerState) {
+    //   if (playerState.playing) {
+    //     if (state is PauseState) {
+    //       final pausedTrack = (state as PauseState).onPause;
+    //       add(PlayEvent(musicEntity: pausedTrack));
+    //     }
+    //   } else {
+    //     if (state is PlayingState) {
+    //       final currentTrack = (state as PlayingState).nowPlaying;
+    //       add(PauseEvent(onPause: currentTrack));
+    //     }
+    //   }
+    // });
 
   }
   void _initializePlaylist(List<MusicEntity> musicList) {

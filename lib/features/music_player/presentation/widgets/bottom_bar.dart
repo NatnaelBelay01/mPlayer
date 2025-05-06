@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -111,21 +112,23 @@ class BottomBar extends StatelessWidget {
                     BlocBuilder<MusicControlBloc, MusicControlState>(
                         builder: (context, state) {
                       return IconButton(
-                        onPressed: () {
-                          if (state is PlayingState) {
-                            context
-                                .read<MusicControlBloc>()
-                                .add(PauseEvent(onPause: state.nowPlaying));
-                          } else if (state is PauseState) {
-                            context
-                                .read<MusicControlBloc>()
-                                .add(PlayEvent(musicEntity: state.onPause));
+                        onPressed: () async {
+                          if (state is PlayingState &&
+                              state.player.playerState.playing) {
+                            context.read<MusicControlBloc>().add(
+                                PlayingEvent(nowPlaying: state.nowPlaying));
+                            await state.player.pause();
+                          } else if (state is PlayingState) {
+                            context.read<MusicControlBloc>().add(
+                                PlayingEvent(nowPlaying: state.nowPlaying));
+                            await state.player.play();
                           } else {
                             context.read<MusicControlBloc>().add(PlayEvent());
                           }
                         },
                         icon: Icon(
-                          state is PlayingState
+                          state is PlayingState &&
+                                  state.player.playerState.playing
                               ? Icons.pause_circle
                               : Icons.play_circle,
                           size: 45,
