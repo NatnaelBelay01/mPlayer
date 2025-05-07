@@ -2,6 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:just_audio/just_audio.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_event.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_state.dart';
@@ -10,9 +11,11 @@ import 'package:mplayer/features/music_player/presentation/pages/now_playing_pag
 
 class BottomBar extends StatelessWidget {
   final MusicEntity? musicEntity;
+  final AudioPlayer player;
   const BottomBar({
     super.key,
     this.musicEntity,
+    required this.player,
   });
 
   @override
@@ -45,7 +48,9 @@ class BottomBar extends StatelessWidget {
                         );
                       }
                       final player = (state as PlaylistLoadSuccess).player;
-                      return NowPlayingPage(player: player,);
+                      return NowPlayingPage(
+                        player: player,
+                      );
                     });
                   });
             },
@@ -110,32 +115,26 @@ class BottomBar extends StatelessWidget {
                         ),
                       ],
                     ),
-                    BlocBuilder<MusicControlBloc, MusicControlState>(
-                        builder: (context, state) {
-                      return IconButton(
-                        onPressed: () async {
-                          if (state is PlayingState &&
-                              state.player.playerState.playing) {
-                            context.read<MusicControlBloc>().add(
-                                PlayingEvent(nowPlaying: state.nowPlaying));
-                            await state.player.pause();
-                          } else if (state is PlayingState) {
-                            context.read<MusicControlBloc>().add(
-                                PlayingEvent(nowPlaying: state.nowPlaying));
-                            await state.player.play();
-                          } else {
-                            context.read<MusicControlBloc>().add(PlayEvent());
-                          }
-                        },
-                        icon: Icon(
-                          state is PlayingState &&
-                                  state.player.playerState.playing
-                              ? Icons.pause_circle
-                              : Icons.play_circle,
-                          size: 45,
-                        ),
-                      );
-                    }),
+                    StreamBuilder<PlayerState>(
+                        stream: player.playerStateStream,
+                        builder: (context, snapshot) {
+                          final playing = snapshot.data?.playing;
+                          return IconButton(
+                            onPressed: () async {
+                              if (playing == true) {
+                                await player.pause();
+                              } else {
+                                await player.play();
+                              }
+                            },
+                            icon: Icon(
+                              playing == true
+                                  ? Icons.pause_circle
+                                  : Icons.play_circle,
+                              size: 45,
+                            ),
+                          );
+                        }),
                   ],
                 ),
               ),

@@ -1,12 +1,8 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:just_audio/just_audio.dart';
 import 'package:mplayer/core/theme/color_pallet.dart';
-import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
-import 'package:mplayer/features/music_control/bloc/music_control_event.dart';
-import 'package:mplayer/features/music_control/bloc/music_control_state.dart';
 import 'package:mplayer/features/music_player/domain/entities/music_entity.dart';
 
 class NowPlayingPage extends StatelessWidget {
@@ -91,14 +87,37 @@ class NowPlayingPage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  Slider(
-                    onChanged: (value) {},
-                    min: 0,
-                    max: 2,
-                    value: 0.3,
-                    activeColor: Colors.blue,
-                    inactiveColor: Colors.grey,
-                  ),
+                  StreamBuilder<Duration>(
+                      stream: player.positionStream,
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                                ConnectionState.waiting ||
+                            !snapshot.hasData) {
+                          return const Slider(
+                            value: 0,
+                            min: 0,
+                            max: 1,
+                            onChanged: null,
+                            activeColor: Colors.blue,
+                            inactiveColor: Colors.grey,
+                          );
+                        }
+                        final position = snapshot.data ?? Duration.zero;
+                        final duration =
+                            player.duration ?? const Duration(seconds: 1);
+                        final positionInSec = position.inSeconds.toDouble();
+                        final maxValue = duration.inSeconds.toDouble();
+                        return Slider(
+                          onChanged: (value) {
+                            player.seek(Duration(seconds: value.toInt()));
+                          },
+                          min: 0,
+                          max: maxValue,
+                          value: positionInSec.clamp(0, maxValue),
+                          activeColor: Colors.blue,
+                          inactiveColor: Colors.grey,
+                        );
+                      }),
                   const Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [Text("1:46"), Text("3:40")],

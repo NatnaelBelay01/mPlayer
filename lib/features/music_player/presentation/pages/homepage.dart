@@ -1,3 +1,4 @@
+import 'package:just_audio/just_audio.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_bloc.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_event.dart';
 import 'package:mplayer/features/music_control/bloc/music_control_state.dart';
@@ -49,7 +50,9 @@ class HomePage extends StatelessWidget {
               if (state is MusicLoadingState) {
                 return const Center(child: CircularProgressIndicator());
               } else if (state is LoadSuccess) {
-								context.read<MusicControlBloc>().add(LoadPlaylistEvent(musicList: state.result));
+                context
+                    .read<MusicControlBloc>()
+                    .add(LoadPlaylistEvent(musicList: state.result));
                 return ListView.builder(
                   padding: const EdgeInsets.only(top: 10),
                   itemCount: state.result.length,
@@ -63,21 +66,26 @@ class HomePage extends StatelessWidget {
             }),
           ),
           BlocBuilder<MusicControlBloc, MusicControlState>(
-            builder: (context, state) {
-							MusicEntity? nowPlaying;
-							if(state is PlayingState){
-								nowPlaying = state.nowPlaying;
-							}
-							if(state is PauseState){
-								nowPlaying = state.onPause;
-							}
-              return Positioned(
-                bottom: 1,
-                left: 1,
-                child: BottomBar(musicEntity: nowPlaying,),
-              );
+              builder: (context, state) {
+            MusicEntity? nowPlaying;
+            var player;
+            if (state is PlayingState) {
+              player = state.player;
+              nowPlaying = state.nowPlaying;
+            } else if (state is PlaylistLoadSuccess) {
+              player = state.player;
+            } else {
+              return (Positioned(bottom: 1, left: 1, child: Container()));
             }
-          ),
+            return Positioned(
+              bottom: 1,
+              left: 1,
+              child: BottomBar(
+                musicEntity: nowPlaying,
+                player: player,
+              ),
+            );
+          }),
         ],
       ),
     );
